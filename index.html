@@ -1,0 +1,352 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Special for Haliza ❤️</title>
+    <link href="https://fonts.googleapis.com/css2?family=Dancing+Script:wght@700&family=Outfit:wght@300;500&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --primary: #ff0055;
+            --glow: #ff2a75;
+            --bg: #0a0205;
+            --text: #ffeef2;
+            --glass: rgba(255, 255, 255, 0.05);
+        }
+
+        * { margin: 0; padding: 0; box-sizing: border-box; user-select: none; }
+
+        body {
+            height: 100vh;
+            background-color: var(--bg);
+            color: var(--text);
+            font-family: 'Outfit', sans-serif;
+            overflow: hidden;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            position: relative;
+        }
+
+        /* --- 1. ANIMASI BACKGROUND: FALLING HEARTS --- */
+        .falling-hearts {
+            position: absolute;
+            top: 0; left: 0; width: 100%; height: 100%;
+            pointer-events: none;
+            z-index: 0;
+            overflow: hidden;
+        }
+
+        .heart-drop {
+            position: absolute;
+            top: -10%;
+            color: var(--primary);
+            opacity: 0.3;
+            font-size: 1.5rem;
+            animation: fall linear infinite;
+        }
+
+        @keyframes fall {
+            0% { transform: translateY(-10vh) rotate(0deg); opacity: 0; }
+            20% { opacity: 0.5; }
+            100% { transform: translateY(110vh) rotate(360deg); opacity: 0; }
+        }
+
+        /* --- 2. MAIN HEART (JANTUNG UTAMA) --- */
+        .main-container {
+            position: relative;
+            z-index: 10;
+            cursor: pointer;
+            transition: transform 0.3s;
+        }
+
+        .main-container:active { transform: scale(0.95); }
+
+        .heart-svg {
+            width: 75vmin;
+            height: 75vmin;
+            filter: drop-shadow(0 0 20px var(--primary));
+            animation: float 4s ease-in-out infinite;
+        }
+
+        .heart-path {
+            fill: transparent;
+            stroke: var(--primary);
+            stroke-width: 2;
+            stroke-linecap: round;
+            stroke-dasharray: 400;
+            stroke-dashoffset: 400;
+            animation: draw 3s ease-out forwards, pulse 2s infinite 3s;
+        }
+
+        @keyframes draw { to { stroke-dashoffset: 0; } }
+        @keyframes pulse {
+            0% { fill: rgba(255, 0, 85, 0.0); transform: scale(1); }
+            50% { fill: rgba(255, 0, 85, 0.15); transform: scale(1.02); }
+            100% { fill: rgba(255, 0, 85, 0.0); transform: scale(1); }
+        }
+        @keyframes float { 0%, 100% { transform: translateY(0); } 50% { transform: translateY(-15px); } }
+
+        .hint-text {
+            position: absolute;
+            bottom: 15%;
+            left: 50%;
+            transform: translateX(-50%);
+            font-size: 1rem;
+            letter-spacing: 2px;
+            opacity: 0;
+            animation: fadeIn 2s forwards 3.5s;
+            text-shadow: 0 0 10px var(--primary);
+        }
+
+        /* --- 3. MODAL SURAT INTERAKTIF --- */
+        .modal {
+            position: fixed;
+            inset: 0;
+            background: rgba(0,0,0,0.8);
+            backdrop-filter: blur(10px);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            opacity: 0;
+            visibility: hidden;
+            transition: 0.5s;
+            z-index: 50;
+        }
+
+        .modal.active { opacity: 1; visibility: visible; }
+
+        .card {
+            background: var(--glass);
+            border: 1px solid rgba(255,255,255,0.1);
+            width: 90%;
+            max-width: 500px;
+            padding: 30px;
+            border-radius: 20px;
+            box-shadow: 0 0 50px rgba(255, 0, 85, 0.2);
+            text-align: center;
+            transform: translateY(50px);
+            transition: 0.5s;
+        }
+
+        .modal.active .card { transform: translateY(0); }
+
+        .card-header {
+            font-family: 'Dancing Script', cursive;
+            font-size: 2.5rem;
+            color: var(--primary);
+            margin-bottom: 20px;
+        }
+
+        .message-box {
+            font-size: 1.1rem;
+            line-height: 1.6;
+            min-height: 100px;
+            margin-bottom: 20px;
+            color: #ddd;
+        }
+
+        /* Tombol Interaktif */
+        .btn-group { display: flex; justify-content: center; gap: 15px; margin-top: 20px; }
+        
+        .btn {
+            padding: 10px 25px;
+            border-radius: 50px;
+            border: none;
+            cursor: pointer;
+            font-weight: bold;
+            font-family: inherit;
+            transition: 0.3s;
+        }
+
+        .btn-primary { background: var(--primary); color: white; box-shadow: 0 0 15px var(--glow); }
+        .btn-secondary { background: transparent; border: 1px solid var(--primary); color: var(--primary); }
+        
+        .btn:hover { transform: scale(1.1); }
+
+        /* Tombol 'No' yang bisa lari */
+        .btn-run { position: relative; transition: 0.1s; }
+
+        /* --- 4. MOUSE TRAIL (Jejak Kursor) --- */
+        .trail {
+            position: absolute;
+            width: 6px; height: 6px;
+            background: var(--primary);
+            border-radius: 50%;
+            pointer-events: none;
+            mix-blend-mode: screen;
+            animation: fadeTrail 1s linear forwards;
+        }
+        @keyframes fadeTrail { to { opacity: 0; transform: scale(0); } }
+
+        /* Partikel Ledakan */
+        .confetti {
+            position: absolute;
+            width: 10px; height: 10px;
+            background: var(--primary);
+            animation: pop 1s ease-out forwards;
+        }
+        @keyframes pop { to { transform: translate(var(--x), var(--y)) rotate(720deg); opacity: 0; } }
+        @keyframes fadeIn { to { opacity: 1; } }
+
+    </style>
+</head>
+<body>
+
+    <audio id="bg-music" loop>
+        <source src="https://cdn.pixabay.com/download/audio/2022/03/24/audio_304746f387.mp3?filename=emotional-piano-11020.mp3" type="audio/mpeg">
+    </audio>
+
+    <div class="falling-hearts" id="falling-hearts"></div>
+
+    <div class="main-container" onclick="openLetter()">
+        <svg class="heart-svg" viewBox="0 0 100 100">
+            <path class="heart-path" d="M50,30 C35,10 10,20 10,45 C10,65 30,75 50,90 C70,75 90,65 90,45 C90,20 65,10 50,30 Z" />
+        </svg>
+        <div class="hint-text">Klik Hatinya Haliza ❤️</div>
+    </div>
+
+    <div class="modal" id="modal">
+        <div class="card">
+            <div class="card-header">Dearest Haliza...</div>
+            
+            <div class="message-box" id="text-area"></div>
+            
+            <div class="btn-group" id="controls">
+                <button class="btn btn-primary" onclick="nextMessage()">Baca Pesan 💌</button>
+            </div>
+
+            <div class="btn-group" id="final-choice" style="display: none;">
+                <button class="btn btn-secondary btn-run" id="btn-no" onmouseover="runButton()">No</button>
+                <button class="btn btn-primary" onclick="acceptLove()">Yes, I Do! ❤️</button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // --- KONFIGURASI PESAN BERTAHAP ---
+        const messages = [
+            "Hai Haliza, terima kasih sudah hadir di hidupku setiap hari.",
+            "Kehadiranmu memberi warna baru. Kamu bukan cuma 'Special', tapi kamu seperti rumah tempatku pulang.",
+            "Terima kasih sudah menerimaku apa adanya. Aku mungkin belum sempurna, tapi aku akan selalu berusaha yang terbaik buat kamu.",
+            "So, I have one question for you..."
+        ];
+
+        let currentMsgIndex = 0;
+        const textArea = document.getElementById('text-area');
+        const controls = document.getElementById('controls');
+        const finalChoice = document.getElementById('final-choice');
+        const modal = document.getElementById('modal');
+        const music = document.getElementById('bg-music');
+        const btnNo = document.getElementById('btn-no');
+
+        // 1. GENERATE BACKGROUND HEARTS
+        function createFallingHearts() {
+            const container = document.getElementById('falling-hearts');
+            const heartCount = 20; 
+            for(let i=0; i<heartCount; i++){
+                const heart = document.createElement('div');
+                heart.innerHTML = '❤️';
+                heart.classList.add('heart-drop');
+                heart.style.left = Math.random() * 100 + 'vw';
+                heart.style.animationDuration = Math.random() * 3 + 4 + 's';
+                heart.style.fontSize = Math.random() * 1 + 0.5 + 'rem';
+                container.appendChild(heart);
+            }
+        }
+        createFallingHearts();
+
+        // 2. MOUSE TRAIL EFFECT
+        document.addEventListener('mousemove', (e) => {
+            const trail = document.createElement('div');
+            trail.classList.add('trail');
+            trail.style.left = e.pageX + 'px';
+            trail.style.top = e.pageY + 'px';
+            document.body.appendChild(trail);
+            setTimeout(() => trail.remove(), 1000);
+        });
+
+        // 3. LOGIKA BUKA SURAT
+        function openLetter() {
+            music.play().catch(e => console.log("Audio perlu interaksi"));
+            modal.classList.add('active');
+            textArea.innerHTML = "<i>(Klik tombol di bawah untuk membaca...)</i>";
+        }
+
+        // 4. LOGIKA PESAN BERTAHAP
+        function nextMessage() {
+            if (currentMsgIndex < messages.length) {
+                // Efek mengetik
+                textArea.innerHTML = "";
+                let txt = messages[currentMsgIndex];
+                let i = 0;
+                
+                // Disable tombol saat mengetik
+                const btn = controls.querySelector('button');
+                btn.style.display = 'none';
+
+                function type() {
+                    if (i < txt.length) {
+                        textArea.innerHTML += txt.charAt(i);
+                        i++;
+                        setTimeout(type, 40);
+                    } else {
+                        // Selesai ngetik
+                        currentMsgIndex++;
+                        if (currentMsgIndex < messages.length) {
+                            btn.textContent = "Lanjut...";
+                            btn.style.display = 'block';
+                        } else {
+                            // Tampilkan Pilihan Akhir
+                            controls.style.display = 'none';
+                            finalChoice.style.display = 'flex';
+                            textArea.innerHTML += "<br><br><b>Will you be my Valentine?</b>";
+                        }
+                    }
+                }
+                type();
+            }
+        }
+
+        // 5. TOMBOL NO YANG KABUR (RUNAWAY BUTTON)
+        function runButton() {
+            const x = Math.random() * 200 - 100; // Gerak random kiri/kanan
+            const y = Math.random() * 200 - 100; // Gerak random atas/bawah
+            btnNo.style.transform = `translate(${x}px, ${y}px)`;
+        }
+        // Untuk HP (Touch) biar gak bisa diklik juga
+        btnNo.addEventListener('touchstart', (e) => {
+            e.preventDefault();
+            runButton();
+        });
+
+        // 6. EFEK DITERIMA (CONFETTI)
+        function acceptLove() {
+            textArea.innerHTML = "Yeayyy! Happy Valentine's Day, Sayang! ❤️🌹<br>I Love You!";
+            finalChoice.style.display = 'none';
+            
+            // Ledakan Confetti
+            for(let i=0; i<100; i++) {
+                createConfetti();
+            }
+        }
+
+        function createConfetti() {
+            const confetti = document.createElement('div');
+            confetti.classList.add('confetti');
+            confetti.style.left = '50%';
+            confetti.style.top = '50%';
+            confetti.style.backgroundColor = Math.random() > 0.5 ? '#ff0055' : '#fff';
+            
+            const x = (Math.random() - 0.5) * window.innerWidth;
+            const y = (Math.random() - 0.5) * window.innerHeight;
+            
+            confetti.style.setProperty('--x', `${x}px`);
+            confetti.style.setProperty('--y', `${y}px`);
+            
+            document.body.appendChild(confetti);
+            setTimeout(() => confetti.remove(), 1000);
+        }
+    </script>
+</body>
+</html>
